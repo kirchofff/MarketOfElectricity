@@ -1,0 +1,19 @@
+<cfg>
+    <name>SunElectricStation</name>
+    <coefficients>>
+        <coefficient>
+            <coef>-75.036</coef>
+        </coefficient>
+        <coefficient>
+            <coef>19.297</coef>
+        </coefficient>
+        <coefficient>
+            <coef>-1.253</coef>
+        </coefficient>
+        <coefficient>
+            <coef>0.023</coef>
+        </coefficient>
+    </coefficients>
+</cfg>
+
+

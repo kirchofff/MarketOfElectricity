@@ -1,0 +1,11 @@
+<cfg>
+    <name>WindElectricStation</name>
+    <coefficients>
+        <coefficient>
+            <coef>10.2</coef>
+        </coefficient>
+        <coefficient>
+            <coef>11.3</coef>
+        </coefficient>
+    </coefficients>
+</cfg>

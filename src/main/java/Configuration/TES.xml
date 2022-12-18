@@ -1,0 +1,8 @@
+<cfg>
+    <name>ThermalElectricStation</name>
+    <coefficients>
+        <coefficient>
+            <coef>11</coef>
+        </coefficient>
+    </coefficients>
+</cfg>
