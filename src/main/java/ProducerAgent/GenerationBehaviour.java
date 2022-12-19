@@ -6,31 +6,33 @@ import DF.DfHelper;
 import additionPacakge.CheckHour;
 import additionPacakge.Functions;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
-public class GenerationBehaviour extends Behaviour {
+public class GenerationBehaviour extends OneShotBehaviour {
 //    private final CFGGeneration cfgGeneration;
     private List<Double> coefficients = new ArrayList<>();
-    private CheckHour time;
+//    private CheckHour time;
     private Functions energy;
     private double currentEnergy;
     private int timeOfGeneration;
 //    private Functions functions = new Functions();
-    public GenerationBehaviour(CheckHour time, Functions energy){
+    public GenerationBehaviour(int time, Functions energy){
 //        this.cfgGeneration = cfg;
-        this.time = time;
+//        this.time = time;
         this.energy = energy;
+        this.timeOfGeneration = time;
     }
 
     @Override
     public void onStart() {
-        DfHelper.registerAgent(myAgent, "Seller");
-        timeOfGeneration = time.returnCurrentTime();
-        currentEnergy = energy.raiseEnergy();
-        log.info("{} have this amount of energy {} at {} o'clock", myAgent.getLocalName(), currentEnergy, time.returnCurrentTime());
+        energy.raiseEnergy();
+//        DfHelper.registerAgent(myAgent, "Seller");
+//        timeOfGeneration = time.returnCurrentTime();
+//        log.info("{} have this amount of energy {} at {} o'clock", myAgent.getLocalName(), currentEnergy, time.returnCurrentTime());
 //        if (cfgGeneration.getName().equals("SunElectricStation")){
 //            for (ParametersOfGeneration parameters : cfgGeneration.getCoefficients()) {
 //                coefficients.add(parameters.getCoef());
@@ -63,8 +65,4 @@ public class GenerationBehaviour extends Behaviour {
 //        }
     }
 
-    @Override
-    public boolean done() {
-        return false;
-    }
 }

@@ -10,7 +10,7 @@ import jade.lang.acl.MessageTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RecieveMsgWithTopicEnergyPrice extends OneShotBehaviour {
+public class RecieveMsgWithTopicEnergyPrice extends Behaviour {
     private MessageTemplate mt;
     private AID topic;
     private boolean done = false;
@@ -49,6 +49,11 @@ public class RecieveMsgWithTopicEnergyPrice extends OneShotBehaviour {
         } else {
             block();
         }
+    }
+
+    @Override
+    public boolean done() {
+        return false;
     }
 
     @Override
