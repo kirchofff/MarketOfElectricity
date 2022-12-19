@@ -60,7 +60,8 @@ public class ConsumerAgent extends Behaviour {
                 price = 150;
             }
 
-        }else {block();}
+        }
+//        else {block();}
 
     }
 

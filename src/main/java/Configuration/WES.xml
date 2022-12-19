@@ -1,5 +1,6 @@
 <cfg>
     <name>WindElectricStation</name>
+    <price>9</price>
     <coefficients>
         <coefficient>
             <coef>10.2</coef>

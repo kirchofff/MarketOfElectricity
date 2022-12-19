@@ -1,5 +1,6 @@
 <cfg>
     <name>SunElectricStation</name>
+    <price>7</price>
     <coefficients>>
         <coefficient>
             <coef>-75.036</coef>

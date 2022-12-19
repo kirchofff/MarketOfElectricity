@@ -12,6 +12,9 @@ public class CFGGeneration {
     @XmlElement
     private String name;
 
+    @XmlElement
+    private int price;
+
     @XmlElementWrapper(name = "coefficients")
     @XmlElement(name = "coefficient")
     private List <ParametersOfGeneration> coefficients;

@@ -23,10 +23,12 @@ public class ProduceBehaviour extends FSMBehaviour {
     private Functions functions;
     private List<Double> coefficients = new ArrayList<>();
     private double fullPower = 0;
+    private int myPrice;
     public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time){
         this.myAgent = myAgent;
         this.cfgGeneration = cfg;
         this.time = time;
+        myPrice = cfg.getPrice();
     }
     @SneakyThrows
     @Override
@@ -35,14 +37,10 @@ public class ProduceBehaviour extends FSMBehaviour {
             coefficients.add(parameters.getCoef());
         }
         functions = new Functions(coefficients, time);
-        myAgent.addBehaviour(new GenerationBehaviour(time.returnCurrentTime(), functions));
-        this.registerFirstState(new RecieveMsgWithTopicEnergyPrice(), RECEIVE_MSG);
-        myAgent.addBehaviour(new WakerBehaviour(myAgent, 2000) {
-            @Override
-            protected void onWake() {
-                System.out.println(functions.returnEnergy());
-            }
-        });
+//        myAgent.addBehaviour(new GenerationBehaviour(time.returnCurrentTime(), functions));
+        myAgent.addBehaviour(new RecieveMsgWithTopicEnergyPrice( functions.returnEnergy(),cfgGeneration.getPrice(),functions));
+
+//        this.registerFirstState(new RecieveMsgWithTopicEnergyPrice( functions.returnEnergy(),cfgGeneration.getPrice()), RECEIVE_MSG);
 
 //        this.registerFirstState(new GenerationBehaviour(time, functions), START_GENERATING);
 //        this.registerDefaultTransition(START_GENERATING, RECEIVE_MSG);

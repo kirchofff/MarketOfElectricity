@@ -18,7 +18,12 @@ public class TopicReceiveFromProducer extends Behaviour {
     public void action() {
         ACLMessage receive = getAgent().receive(mt);
         if (receive != null){
-            log.info(receive.getContent());
+            log.info("Consumer send request for energy in amount {} with price {}, now {} have this amount of energy {} with price {}",
+                    receive.getContent().split(";")[0],
+                    receive.getContent().split(";")[1],
+                    receive.getSender().getLocalName(),
+                    receive.getContent().split(";")[3],
+                    receive.getContent().split(";")[2]);
         }else {
             block();
         }
