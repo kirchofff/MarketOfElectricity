@@ -4,18 +4,13 @@ import ClassXML.CFG;
 import ClassXML.CFGGeneration;
 import ClassXML.ParseGenerationXML;
 import ClassXML.ParseXML;
-import ConsumerAgent.SendRequestForEnergyBehaviour;
+import ConsumerAgent.ConsumerAgent;
 import DistributerAgent.DistributeAgent;
 import ProducerAgent.ProduceBehaviour;
-import Topic.TopicReceive;
+import Topic.TopicReceiveFromProducer;
 import additionPacakge.CheckHour;
-import jade.core.AID;
 import jade.core.Agent;
-import jade.core.ServiceException;
-import jade.core.messaging.TopicManagementHelper;
 
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import lombok.SneakyThrows;
 
 
@@ -27,13 +22,13 @@ public class AgentSetup extends Agent {
     protected void setup() {
         if (oneTopicExist){
             oneTopicExist = false;
-            addBehaviour(new TopicReceive());
+            addBehaviour(new TopicReceiveFromProducer());
         }
         if (getLocalName().equals("BootFactory")){
             CFG cfgBoot1 = ParseXML.ParseXML("BootFactory");
-            addBehaviour(new SendRequestForEnergyBehaviour(this, cfgBoot1, time));
+            addBehaviour(new ConsumerAgent(this, cfgBoot1, time, this.getLocalName()));
         }
-        if (getLocalName().equals("DistributeAgent")){
+        if (getLocalName().contains("Distributor")){
             addBehaviour(new DistributeAgent(this));
         }
         if (getLocalName().equals("SES")){

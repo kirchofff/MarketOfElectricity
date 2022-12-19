@@ -2,17 +2,18 @@ package ProducerAgent;
 
 import DF.DfHelper;
 import Topic.SendToTopic;
-import Topic.TopicReceive;
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RecieveMsgWithTopicEnergyPrice extends Behaviour {
+public class RecieveMsgWithTopicEnergyPrice extends OneShotBehaviour {
     private MessageTemplate mt;
     private AID topic;
+    private boolean done = false;
     public RecieveMsgWithTopicEnergyPrice (){
         this.topic = topic;
     }
@@ -39,14 +40,20 @@ public class RecieveMsgWithTopicEnergyPrice extends Behaviour {
 //            myAgent.addBehaviour(new TopicReceive());
 //            request.setContent(msg.getContent().split(";")[1]+msg.getContent().split(";")[2]);
 //            myAgent.send(request);
-            myAgent.addBehaviour(new SendToTopic(myAgent, topic, Double.parseDouble(msg.getContent().split(";")[1]), Integer.parseInt(msg.getContent().split(";")[2])));
+            myAgent.addBehaviour(new SendToTopic(
+                    myAgent,
+                    topic,
+                    Double.parseDouble(msg.getContent().split(";")[1]),
+                    Integer.parseInt(msg.getContent().split(";")[2]))
+                    );
         } else {
             block();
         }
     }
 
     @Override
-    public boolean done() {
-        return false;
+    public int onEnd() {
+        return 1;
     }
+
 }

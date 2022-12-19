@@ -7,52 +7,47 @@ import additionPacakge.CheckHour;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-public class SendRequestForEnergyBehaviour extends Behaviour {
+public class SendRequestForEnergyBehaviour extends OneShotBehaviour {
     private final CFG cfg;
     private MessageTemplate mt;
-    private CheckHour time;
+    private int currentTime;
     private List<AID> distributor;
-    public SendRequestForEnergyBehaviour(Agent myAgent, CFG cfg, CheckHour time){
+    private int price;
+    private String distributorName;
+    public SendRequestForEnergyBehaviour(Agent myAgent, CFG cfg, int currentTime, int price, String distributorName){
         this.cfg = cfg;
         this.myAgent = myAgent;
-        this.time = time;
+        this.currentTime = currentTime;
+        this.price = price;
+        this.distributorName = distributorName;
     }
     @SneakyThrows
     @Override
     public void onStart() {
-        DfHelper.registerAgent(myAgent, "ConsumerAgent");
-        distributor = new ArrayList<>(DfHelper.findAgents(myAgent, "Distributor"));
+        Thread.sleep(100);
+        distributor = new ArrayList<>(DfHelper.findAgents(myAgent, "DistributorOf"+distributorName));
     }
-
     @Override
     public void action() {
-        while (true){
-            for (ParametersOfConsumer poc : cfg.getPeriods()) {
-                if (poc.getTime() == time.returnCurrentTime()){
-                        //                        log.info("Agent send request to energy {} MWt at {} o'clock", poc.getLoad(), time.returnCurrentTime());
-                        ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
-                        distributor.forEach(m::addReceiver);
-                        m.setContent((poc.getLoad()*cfg.getFullLoad())+";"+time.returnCurrentTime()+";"+"150");
-                        m.setProtocol("request");
-                        myAgent.send(m);
-                }
-                while (poc.getTime() == time.returnCurrentTime()){}
+        for (ParametersOfConsumer poc : cfg.getPeriods()) {
+            if (poc.getTime() == currentTime){
+                //                        log.info("Agent send request to energy {} MWt at {} o'clock", poc.getLoad(), time.returnCurrentTime());
+                ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
+                distributor.forEach(m::addReceiver);
+                m.setContent((poc.getLoad()*cfg.getFullLoad())+";"+ currentTime+";"+price);
+                m.setProtocol("request");
+                myAgent.send(m);
             }
         }
-
     }
 
-    @Override
-    public boolean done() {
-        return false;
-    }
 }
