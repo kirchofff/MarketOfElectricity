@@ -1,4 +1,4 @@
-package DistributerAgent;
+package Trash;
 
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;

@@ -1,6 +1,5 @@
 package Trash;
 
-import additionPacakge.TopicInformation;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -9,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TopicReceive extends Behaviour {
     private MessageTemplate mt;
-    private TopicInformation information;
 
     @Override
     public void onStart() {

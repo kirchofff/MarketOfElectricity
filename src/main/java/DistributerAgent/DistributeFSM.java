@@ -41,7 +41,7 @@ public class DistributeFSM extends FSMBehaviour {
 
         this.registerState(new DivideContract(divideBitsAnalyzer, energyRequest, price, topic, seller),DIVIDE_CONTRACT);
 
-        this.registerState(new ConcludeDividedContact(divideBitsAnalyzer, consumer, energyRequest),DEAL_WITH_DIVIDE_WINNER);
+        this.registerState(new ConcludeDividedContact(divideBitsAnalyzer, consumer, energyRequest, price),DEAL_WITH_DIVIDE_WINNER);
 
         this.registerState(new UnsuccessfulTrade(consumer),UNSUCCESSFUL_TRADE);
 
@@ -49,15 +49,18 @@ public class DistributeFSM extends FSMBehaviour {
 
         this.registerTransition(COLLECT_BIDS, DEAL_WITH_WINNER, 1); // If bids are successful -> END
 
-        this.registerTransition(DEAL_WITH_WINNER, END, 1);
-
-        this.registerTransition(DEAL_WITH_WINNER, END, 2);
+        this.registerDefaultTransition(DEAL_WITH_WINNER, END);
+//        this.registerTransition(DEAL_WITH_WINNER, END, 1);
+//
+//        this.registerTransition(DEAL_WITH_WINNER, END, 2);
 
         this.registerTransition(COLLECT_BIDS, DIVIDE_CONTRACT, 2); // If bids unsuccessful -> DIVIDE
 
         this.registerTransition(DIVIDE_CONTRACT, DEAL_WITH_DIVIDE_WINNER, 3); // If divide successful -> END
 
         this.registerTransition(DEAL_WITH_DIVIDE_WINNER, END, 1);
+
+        this.registerTransition(DEAL_WITH_DIVIDE_WINNER, END, 2);
 
         this.registerTransition(DIVIDE_CONTRACT, UNSUCCESSFUL_TRADE, 4); // If divide unsuccessful -> unsuccessful trade
 

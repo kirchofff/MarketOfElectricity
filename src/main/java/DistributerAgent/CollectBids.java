@@ -33,7 +33,7 @@ public class CollectBids extends Behaviour {
     @SneakyThrows
     @Override
     public void onStart() {
-        myAgent.addBehaviour(new SendToTopic(myAgent, topic, energyRequest, price, 11, "propose_price_buy"));
+//        myAgent.addBehaviour(new SendToTopic(myAgent, topic, energyRequest, price, 11, "propose_price_buy"));
         List<AID> sellers = DfHelper.findAgents(myAgent, "Seller");
         requestsCount = sellers.size();
     }

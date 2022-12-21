@@ -28,7 +28,7 @@ public class SendRequestAndCollectBids extends ParallelBehaviour {
     @Override
     public void onStart() {
         addSubBehaviour(new CollectBids(bidsAnalyzer, energyRequest, price, topic));
-        addSubBehaviour(new WakerBehaviour(myAgent, 2500) {
+        addSubBehaviour(new WakerBehaviour(myAgent, 1500) {
             @Override
             protected void onWake() {
             }
@@ -46,7 +46,7 @@ public class SendRequestAndCollectBids extends ParallelBehaviour {
             m.setProtocol("refuse");
             m.setContent("refuse");
             myAgent.send(m);
-            log.debug("{} send refuse to seller", myAgent.getLocalName());
+//            log.debug("{} send refuse to seller", myAgent.getLocalName());
             return 2;
         } else return 2;
 //                bidsAnalyzer.getBestSeller().isPresent() ? 1 : 2;

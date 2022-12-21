@@ -1,6 +1,6 @@
 <cfg>
     <name>ThermalElectricStation</name>
-    <price>13</price>
+    <price>100</price>
     <coefficients>
         <coefficient>
             <coef>11</coef>

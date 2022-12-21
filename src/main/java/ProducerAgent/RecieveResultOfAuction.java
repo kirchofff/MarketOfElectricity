@@ -32,7 +32,7 @@ public class RecieveResultOfAuction extends Behaviour {
         if (msg != null) {
             if (msg.getPerformative() == 3 && msg.getProtocol().equals("cfp")){
                 functions.reduceEnergy(Double.parseDouble(msg.getContent().split(";")[0]));
-                log.debug("{} reduce energy for {} and get {}", myAgent.getLocalName(), msg.getContent().split(";")[0], msg.getContent().split(";")[1]);
+//                log.debug("{} reduce energy for {} and get {}", myAgent.getLocalName(), msg.getContent().split(";")[0], msg.getContent().split(";")[1]);
                 result = 1;
                 done = true;
             } else if (msg.getPerformative() == 2 && msg.getProtocol().equals("refuse")){

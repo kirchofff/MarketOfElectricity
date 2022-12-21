@@ -28,6 +28,7 @@ public class DivideBitsAnalyzer {
         try{
             price = Double.parseDouble(content.split(";")[2]);
             energy = Double.parseDouble(content.split(";")[1]);
+            price = price* energy;
         } catch (NumberFormatException nfe){
             log.error("inappropriate content");
             return;

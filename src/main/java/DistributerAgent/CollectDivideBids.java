@@ -43,10 +43,10 @@ public class CollectDivideBids extends Behaviour {
     public void action() {
         ACLMessage response = myAgent.receive(mt);
         if (response != null){
-            log.debug("From {} topic received propose with this amount of energy {} and this price {}",
-            response.getContent().split(";")[0],
-            response.getContent().split(";")[1],
-            response.getContent().split(";")[2]);
+//            log.debug("From {} topic received propose with this amount of energy {} and this price {}",
+//            response.getContent().split(";")[0],
+//            response.getContent().split(";")[1],
+//            response.getContent().split(";")[2]);
             responses.add(response);
             bidsAnalyzer.putBid(response, energyRequest);
         } else {

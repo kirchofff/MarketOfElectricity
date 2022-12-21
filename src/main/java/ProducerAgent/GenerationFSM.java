@@ -33,7 +33,7 @@ public class GenerationFSM extends FSMBehaviour {
 
         this.registerState(new SendToTopic(myAgent, subscribeOnTopic, energy,price, performative, protocol), SEND_TO_TOPIC);
 
-        this.registerState(new ReceiveDividedResult(functions, myAgent, subscribeOnTopic, energy,price, performative, protocol), RECEIVE_DIVIDED_RESULT);
+        this.registerState(new ReceiveDividedResult(functions, myAgent, subscribeOnTopic, energy, price, performative, protocol), RECEIVE_DIVIDED_RESULT);
 
         this.registerTransition(RECEIVE_RESULT, END, 1); // if generation receive positive accept -> END
 
@@ -53,7 +53,7 @@ public class GenerationFSM extends FSMBehaviour {
         this.registerLastState(new OneShotBehaviour() {
             @Override
             public void action() {
-//                log.info("Auction has been ended");
+                log.info("{} now have this amount of energy {}", myAgent.getLocalName(), functions.returnEnergy());
             }
         }, END);
     }

@@ -19,6 +19,7 @@ public class BidsAnalyzer {
         try{
             price = Double.parseDouble(content.split(";")[2]);
             energy = Double.parseDouble(content.split(";")[1]);
+            price = price*requestEnergy;
         } catch (NumberFormatException nfe){
             log.error("inappropriate content");
             return;
@@ -32,7 +33,7 @@ public class BidsAnalyzer {
         if (price < bestValue && energy >= requestEnergy){
             bestValue = price;
             bestSeller = m.getSender();
-            log.debug("BidsAnalyzer best value {} best seller",bestValue, bestSeller.getLocalName());
+//            log.debug("BidsAnalyzer best value {} best seller",bestValue, bestSeller.getLocalName());
         }
     }
 

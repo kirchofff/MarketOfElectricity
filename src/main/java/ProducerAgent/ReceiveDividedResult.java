@@ -33,7 +33,7 @@ public class ReceiveDividedResult extends Behaviour {
 
     @Override
     public void onStart() {
-//        log.debug("{} has started", getBehaviourName());
+//        log.debug("{} wait for divided offer", getBehaviourName());
         myAgent.addBehaviour(new SendToTopic(myAgent, topic, amountOfEnergy, price, performative, protocol));
     }
 
@@ -45,7 +45,7 @@ public class ReceiveDividedResult extends Behaviour {
         if (msg != null) {
             if (msg.getPerformative() == 3 && msg.getProtocol().equals("cfp")){
                 functions.reduceEnergy(Double.parseDouble(msg.getContent().split(";")[0]));
-                log.debug("{} reduce energy for {} and get {}", myAgent.getLocalName(), msg.getContent().split(";")[0], msg.getContent().split(";")[1]);
+//                log.debug("{} reduce energy for {} and get {}", myAgent.getLocalName(), msg.getContent().split(";")[0], msg.getContent().split(";")[1]);
                 result = 1;
                 done = true;
             } else if (msg.getPerformative() == 2 && msg.getProtocol().equals("refuse")){
@@ -57,6 +57,11 @@ public class ReceiveDividedResult extends Behaviour {
         } else {
             block();
         }
+    }
+
+    @Override
+    public int onEnd() {
+        return result;
     }
 
     @Override

@@ -23,7 +23,7 @@ public class GetRequestAndSendBehaviour extends Behaviour {
 
     @Override
     public void onStart() {
-        DfHelper.registerAgent(myAgent, myAgent.getLocalName());
+//        DfHelper.registerAgent(myAgent, myAgent.getLocalName());
     }
 
     @Override

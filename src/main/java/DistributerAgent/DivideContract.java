@@ -30,9 +30,9 @@ public class DivideContract extends ParallelBehaviour {
     }
     @Override
     public void onStart() {
-        log.info("Distributor try to divide contract");
+        log.info("{} try to divide contract", myAgent.getLocalName());
         addSubBehaviour(new CollectDivideBids(bidsAnalyzer, energyRequest, price, topic));
-        addSubBehaviour(new WakerBehaviour(myAgent, 3000) {
+        addSubBehaviour(new WakerBehaviour(myAgent, 2000) {
             @Override
             protected void onWake() {
             }
@@ -44,7 +44,7 @@ public class DivideContract extends ParallelBehaviour {
         if (bidsAnalyzer.isSuccess()){
             return 3;
         } else if (!bidsAnalyzer.isSuccess()){
-            log.debug("{} cant even divide", myAgent.getLocalName());
+            log.debug("{} cant divide contract due to lack of energy", myAgent.getLocalName());
             myAgent.addBehaviour(new OneShotBehaviour() {
                 @Override
                 public void action() {
@@ -52,7 +52,6 @@ public class DivideContract extends ParallelBehaviour {
                     seller.forEach(m::addReceiver);
                     m.setProtocol("refuse");
                     myAgent.send(m);
-                    log.debug("{} send refuse to seller", myAgent.getLocalName());
                     myAgent.removeBehaviour(this);
                 }
             });

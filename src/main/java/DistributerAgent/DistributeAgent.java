@@ -19,6 +19,7 @@ import java.util.List;
 public class DistributeAgent extends Behaviour {
     private MessageTemplate mt;
     private List<AID> seller;
+    private List <AID> senders = new ArrayList<>();
     public DistributeAgent(Agent myAgent){
         this.myAgent = myAgent;
     }
@@ -27,7 +28,7 @@ public class DistributeAgent extends Behaviour {
     public void onStart() {
         DfHelper.registerAgent(myAgent, myAgent.getLocalName());
         Thread.sleep(300);
-        this.seller = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
+        seller = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class DistributeAgent extends Behaviour {
                         msg.getSender(),
                         seller));
             } else if (msg.getProtocol().equals("request_second")){
-                log.debug("{} needs this amount of energy {} at {} hours peak price {}",
+                log.debug("{} increase it's price and still needs this amount of energy {} at {} hours peak price {}",
                         msg.getSender().getLocalName(),
                         msg.getContent().split(";")[0],
                         msg.getContent().split(";")[1],

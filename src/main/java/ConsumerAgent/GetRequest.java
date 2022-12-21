@@ -37,13 +37,13 @@ public class GetRequest extends Behaviour {
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null){
             if (msg.getProtocol().equals("fail_trade") && msg.getPerformative() == 2){
-                log.info("I didn't get energy :c ");
+                log.info("I didn't get energy :c");
                 myAgent.removeBehaviour(this);
             } else if (msg.getProtocol().equals("deal") && msg.getPerformative() == 3){
                 if (Double.parseDouble(msg.getContent().split(";")[1]) > price){
                     price = price*2;
                     myAgent.addBehaviour(new SendRequestForEnergyBehaviour(myAgent, cfg, time, price, distributor, "request_second"));
-                    log.info("Price up");
+                    log.info("{} increase price to {}", myAgent.getLocalName(), price);
                     myAgent.removeBehaviour(this);
 //                price = price * 2;
 //                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);

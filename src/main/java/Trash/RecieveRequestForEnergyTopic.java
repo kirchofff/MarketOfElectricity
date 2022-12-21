@@ -1,4 +1,4 @@
-package ProducerAgent;
+package Trash;
 
 import jade.core.behaviours.Behaviour;
 
