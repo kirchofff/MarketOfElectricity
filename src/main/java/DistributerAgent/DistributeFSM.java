@@ -1,11 +1,14 @@
 package DistributerAgent;
 
+import ConsumerAgent.GetRequest;
 import additionPacakge.BidsAnalyzer;
 import additionPacakge.DivideBitsAnalyzer;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.WakerBehaviour;
+import jade.lang.acl.ACLMessage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,6 +79,17 @@ public class DistributeFSM extends FSMBehaviour {
             @Override
             public void action() {
                 log.info("Auction has been ended");
+                ACLMessage m = new ACLMessage(ACLMessage.CONFIRM);
+                seller.forEach(m::addReceiver);
+                m.setContent("");
+                m.setProtocol("end_of_action");
+                myAgent.send(m);
+                myAgent.addBehaviour(new WakerBehaviour(myAgent,200) {
+                    @Override
+                    protected void onWake() {
+                        super.onWake();
+                    }
+                });
             }
         }, END);
 

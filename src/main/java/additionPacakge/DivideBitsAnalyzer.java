@@ -63,6 +63,7 @@ public class DivideBitsAnalyzer {
         fullPrice.clear();
         seller.clear();
         energyOfSenders.clear();
+        success = false;
     }
     public void setSuccess(boolean success) {
         this.success = success;

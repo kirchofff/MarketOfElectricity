@@ -28,7 +28,7 @@ public class SendRequestAndCollectBids extends ParallelBehaviour {
     @Override
     public void onStart() {
         addSubBehaviour(new CollectBids(bidsAnalyzer, energyRequest, price, topic));
-        addSubBehaviour(new WakerBehaviour(myAgent, 1500) {
+        addSubBehaviour(new WakerBehaviour(myAgent, 2000) {
             @Override
             protected void onWake() {
             }

@@ -42,7 +42,7 @@ public class GetRequest extends Behaviour {
             } else if (msg.getProtocol().equals("deal") && msg.getPerformative() == 3){
                 if (Double.parseDouble(msg.getContent().split(";")[1]) > price){
                     price = price*2;
-                    myAgent.addBehaviour(new SendRequestForEnergyBehaviour(myAgent, cfg, time, price, distributor, "request_second"));
+                    myAgent.addBehaviour(new SendRequestForEnergyBehaviour(myAgent, cfg, time, price, distributor, "request"));
                     log.info("{} increase price to {}", myAgent.getLocalName(), price);
                     myAgent.removeBehaviour(this);
 //                price = price * 2;
