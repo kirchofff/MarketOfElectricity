@@ -7,26 +7,27 @@ import ClassXML.ParseXML;
 import ConsumerAgent.ConsumerAgent;
 import DistributerAgent.DistributeAgent;
 import ProducerAgent.ProduceBehaviour;
-import Topic.TopicReceiveFromProducer;
 import additionPacakge.CheckHour;
+import additionPacakge.TopicInformation;
 import jade.core.Agent;
 
 import lombok.SneakyThrows;
 
 
 public class AgentSetup extends Agent {
-    private CheckHour time = new CheckHour(System.currentTimeMillis(), 10_000);
+    private CheckHour time = new CheckHour(System.currentTimeMillis(), 20_000);
     private boolean oneTopicExist = true;
+    private TopicInformation topicInformation = new TopicInformation();
     @SneakyThrows
     @Override
     protected void setup() {
-        if (oneTopicExist){
-            oneTopicExist = false;
-            addBehaviour(new TopicReceiveFromProducer());
-        }
+//        if (oneTopicExist){
+//            oneTopicExist = false;
+//            addBehaviour(new TopicReceive());
+//        }
         if (getLocalName().equals("BootFactory")){
             CFG cfgBoot1 = ParseXML.ParseXML("BootFactory");
-            addBehaviour(new ConsumerAgent(this, cfgBoot1, time, this.getLocalName()));
+            addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
         }
         if (getLocalName().contains("Distributor")){
             addBehaviour(new DistributeAgent(this));

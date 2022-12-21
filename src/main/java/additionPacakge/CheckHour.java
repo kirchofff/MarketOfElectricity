@@ -32,9 +32,4 @@ public class CheckHour {
             return -1000;
         }
     }
-    private void nextDay(){
-        if (time > 24){
-            time = 0;
-        }
-    }
 }

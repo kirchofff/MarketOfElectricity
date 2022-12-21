@@ -7,40 +7,45 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 @Slf4j
 public class BidsAnalyzer {
-    private double bestValue;
+    private double bestValue = Double.MAX_VALUE;
     private AID bestSeller;
 
     private boolean success;
 
-    public void putBid(ACLMessage m){
+    public void putBid(ACLMessage m, double requestEnergy){
         String content = m.getContent();
-        double value;
+        double price;
+        double energy;
         try{
-            value = Double.parseDouble(content);
+            price = Double.parseDouble(content.split(";")[2]);
+            energy = Double.parseDouble(content.split(";")[1]);
         } catch (NumberFormatException nfe){
             log.error("inappropriate content");
             return;
         }
-        if (value <= 0){
-            System.out.println("received refuse with value "+value);
+        if (energy <= 0){
+//            log.debug("{} received refuse with price {} for this amount of power {}", content.split(";")[0], price, energy);
             return;
         } else {
-            System.out.println("received propose with value "+value);
+//            log.debug("{} received propose with price {} for this amount of power {}", content.split(";")[0], price, energy);
         }
-        if (bestSeller == null || value < bestValue){
-            bestValue = value;
+        if (price < bestValue && energy >= requestEnergy){
+            bestValue = price;
             bestSeller = m.getSender();
+            log.debug("BidsAnalyzer best value {} best seller",bestValue, bestSeller.getLocalName());
         }
     }
 
     public Optional<AID> getBestSeller(){
         return bestSeller == null ? Optional.empty() : Optional.of(bestSeller);
     }
-
     public double getBestValue() {
         return bestValue;
     }
-
+    public void resetBest (){
+        bestSeller = null;
+        bestValue = Double.MAX_VALUE;
+    }
     public boolean isSuccess() {
         return success;
     }

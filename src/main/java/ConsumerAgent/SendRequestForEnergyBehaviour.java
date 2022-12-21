@@ -11,41 +11,50 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Slf4j
 public class SendRequestForEnergyBehaviour extends OneShotBehaviour {
     private final CFG cfg;
     private MessageTemplate mt;
-    private int currentTime;
+    private CheckHour currentTime;
     private List<AID> distributor;
-    private int price;
+    private double price;
     private String distributorName;
-    public SendRequestForEnergyBehaviour(Agent myAgent, CFG cfg, int currentTime, int price, String distributorName){
+    private String requestName;
+    public SendRequestForEnergyBehaviour(Agent myAgent, CFG cfg, CheckHour currentTime, double price, String distributorName, String requestName){
         this.cfg = cfg;
         this.myAgent = myAgent;
         this.currentTime = currentTime;
         this.price = price;
         this.distributorName = distributorName;
+        this.requestName = requestName;
     }
     @SneakyThrows
     @Override
     public void onStart() {
-        Thread.sleep(100);
-        distributor = new ArrayList<>(DfHelper.findAgents(myAgent, "DistributorOf"+distributorName));
+//        Thread.sleep(100);
+//        distributor = new ArrayList<>(DfHelper.findAgents(myAgent, "DistributorOf"+distributorName));
     }
     @Override
     public void action() {
         for (ParametersOfConsumer poc : cfg.getPeriods()) {
-            if (poc.getTime() == currentTime){
-                //                        log.info("Agent send request to energy {} MWt at {} o'clock", poc.getLoad(), time.returnCurrentTime());
+            if (poc.getTime() == currentTime.returnCurrentTime()){
                 ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
-                distributor.forEach(m::addReceiver);
-                m.setContent((poc.getLoad()*cfg.getFullLoad())+";"+ currentTime+";"+price);
-                m.setProtocol("request");
+//                distributor.forEach(m::addReceiver);
+                AID aid = new AID("DistributorOf"+distributorName, false);
+                m.addReceiver(aid);
+                m.setContent((poc.getLoad()*cfg.getFullLoad())+";"+ currentTime.returnCurrentTime()+";"+price);
+                m.setProtocol(requestName);
                 myAgent.send(m);
+                myAgent.addBehaviour(new GetRequest(price, distributorName, cfg, currentTime));
+//                log.info("{} send request to energy {} MWt at {} o'clock to {}", myAgent.getLocalName(),
+//                        poc.getLoad()*cfg.getFullLoad(),
+//                        currentTime.returnCurrentTime(),
+//                        aid.getLocalName());
             }
         }
     }

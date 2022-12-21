@@ -1,4 +1,4 @@
-package DistributerAgent;
+package Trash;
 
 import DF.DfHelper;
 import additionPacakge.CreateTopic;
@@ -28,7 +28,7 @@ public class GetRequestAndSendBehaviour extends Behaviour {
 
     @Override
     public void action() {
-        seller = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
+//        seller = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
         mt = MessageTemplate.or(MessageTemplate.MatchPerformative(ACLMessage.REQUEST), MessageTemplate.MatchProtocol("request"));
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null){
@@ -38,11 +38,12 @@ public class GetRequestAndSendBehaviour extends Behaviour {
 //                    msg.getContent().split(";")[1],
 //                    msg.getContent().split(";")[2]);
             CreateTopic topic = new CreateTopic(myAgent);
-            ACLMessage request = new ACLMessage(ACLMessage.SUBSCRIBE);
-            seller.forEach(request::addReceiver);
-            request.setProtocol("buying");
-            request.setContent(topic.returnTopicName(myAgent.getLocalName()).getName()+";"+msg.getContent().split(";")[0]+";"+msg.getContent().split(";")[2]);
-            myAgent.send(request);
+
+//            ACLMessage request = new ACLMessage(ACLMessage.SUBSCRIBE);
+//            seller.forEach(request::addReceiver);
+//            request.setProtocol("buying");
+//            request.setContent(topic.returnTopicName(myAgent.getLocalName()).getName()+";"+msg.getContent().split(";")[0]+";"+msg.getContent().split(";")[2]);
+//            myAgent.send(request);
         }else {
             block();
         }

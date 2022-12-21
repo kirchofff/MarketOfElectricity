@@ -1,13 +1,15 @@
-package Topic;
+package Trash;
 
+import additionPacakge.TopicInformation;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TopicReceiveFromProducer extends Behaviour {
+public class TopicReceive extends Behaviour {
     private MessageTemplate mt;
+    private TopicInformation information;
 
     @Override
     public void onStart() {
@@ -22,8 +24,17 @@ public class TopicReceiveFromProducer extends Behaviour {
                     receive.getContent().split(";")[0],
                     receive.getContent().split(";")[1],
                     receive.getSender().getLocalName(),
-                    receive.getContent().split(";")[3],
-                    receive.getContent().split(";")[2]);
+                    receive.getContent().split(";")[2],
+                    receive.getContent().split(";")[3]);
+//            ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+//            request.setProtocol("bet");
+//            request.addReceiver(topic);
+////        log.info("{} send to topic request from distributor for this amount of energy {} with price {}",
+////                myAgent.getLocalName(),
+////                amountOfEnergy,
+////                price);
+//            request.setContent(amountOfEnergy+";"+price);
+//            myAgent.send(request);
         }else {
             block();
         }

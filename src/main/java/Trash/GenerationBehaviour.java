@@ -1,4 +1,4 @@
-package ProducerAgent;
+package Trash;
 
 import ClassXML.CFGGeneration;
 import ClassXML.ParametersOfGeneration;

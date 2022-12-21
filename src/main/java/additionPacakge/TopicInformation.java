@@ -1,13 +1,13 @@
 package additionPacakge;
 
-public class TopicInformation {
-    private double thermEnergy;
-    private int thermPrice;
-    private double sunEnergy;
-    private int sunPrice;
-    private double windEnergy;
-    private int windPrice;
-    public TopicInformation (String nameOfProducer, int price, double energy){
+import jade.lang.acl.ACLMessage;
+import lombok.Data;
 
-    }
+import java.util.List;
+
+@Data
+public class TopicInformation {
+    private List <Double> thermEnergy;
+    private List<Integer> thermPrice;
+    private ACLMessage answer;
 }
