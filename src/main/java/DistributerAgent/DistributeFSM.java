@@ -38,6 +38,7 @@ public class DistributeFSM extends FSMBehaviour {
         BidsAnalyzer bidsAnalyzer = new BidsAnalyzer();
         DivideBitsAnalyzer divideBitsAnalyzer = new DivideBitsAnalyzer();
 
+//        log.info("FSM of {} started", myAgent.getLocalName());
         this.registerFirstState(new SendRequestAndCollectBids(bidsAnalyzer, energyRequest, price, topic, seller), COLLECT_BIDS);
 
         this.registerState(new ConcludeContract(bidsAnalyzer, energyRequest, consumer, price), DEAL_WITH_WINNER);

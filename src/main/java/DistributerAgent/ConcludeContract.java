@@ -71,25 +71,23 @@ public class ConcludeContract extends OneShotBehaviour {
                     myAgent.send(m);
                 }
             });
-            myAgent.addBehaviour(new OneShotBehaviour() {
-                @Override
-                public void action() {
-                    bidsAnalyzer.resetBest();
-                }
-            });
 
-            List<AID> sellersToEnd = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
-            ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
-            sellersToEnd.forEach(real_end::addReceiver);
-            real_end.setContent("");
-            real_end.setProtocol("end_of_action");
-            myAgent.send(real_end);
+            bidsAnalyzer.resetBest();
+
+
             this.onEnd = 1;
         }
     }
 
     @Override
     public int onEnd() {
+//        log.debug("{} send that auction ended", getBehaviourName());
+        List<AID> sellersToEnd = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
+        ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
+        sellersToEnd.forEach(real_end::addReceiver);
+        real_end.setContent("");
+        real_end.setProtocol("end_of_action");
+        myAgent.send(real_end);
         return onEnd;
     }
 }

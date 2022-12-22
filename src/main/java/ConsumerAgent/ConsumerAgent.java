@@ -36,6 +36,7 @@ public class ConsumerAgent extends Behaviour {
     @Override
     public void onStart() {
         DfHelper.registerAgent(myAgent, "ConsumerAgent");
+        System.out.println("\n");
         log.info("New hour {} begin and new request sent", time.returnCurrentTime());
         myAgent.addBehaviour(new SendRequestForEnergyBehaviour(myAgent,cfg, time, price, myAgent.getLocalName(), "request"));
         currentTime = time.returnCurrentTime();

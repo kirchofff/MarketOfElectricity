@@ -67,7 +67,7 @@ public class DistributeAgent extends Behaviour {
 //                System.out.println(go);
             }else if(msg.getProtocol().equals("go")){
                 if (go){
-                    log.debug("go tak go");
+                    log.debug("{} received permission to bid", myAgent.getLocalName());
                     myAgent.addBehaviour(new DistributeFSM (
                             myAgent,
                             energy,
@@ -84,10 +84,11 @@ public class DistributeAgent extends Behaviour {
                 if (sleep){
                     sleep = false;
                     log.debug("{} ask {} to wait", msg.getSender().getLocalName(), myAgent.getLocalName());
-                    Thread.sleep(5000);
+                    Thread.sleep(5_000);
                     System.out.println("\n");
-                    log.debug("wake and say that {}  needs this amount of energy {} peak price {}",
-                            consumer.getLocalName(),
+                    log.debug("{} wake and say that {}  needs this amount of energy {} peak price {}",
+                            myAgent.getLocalName()
+                            ,consumer.getLocalName(),
                             energy,
                             price);
                     ACLMessage request = new ACLMessage(ACLMessage.SUBSCRIBE);
@@ -95,13 +96,13 @@ public class DistributeAgent extends Behaviour {
                     request.setProtocol("topic");
                     request.setContent(topicName.getLocalName());
                     myAgent.send(request);
-                    myAgent.addBehaviour(new DistributeFSM (
-                            myAgent,
-                            energy,
-                            price,
-                            topicName,
-                            consumer,
-                            seller));
+//                    myAgent.addBehaviour(new DistributeFSM (
+//                            myAgent,
+//                            energy,
+//                            price,
+//                            topicName,
+//                            consumer,
+//                            seller));
                 }
             }
         }else {

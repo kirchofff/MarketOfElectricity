@@ -9,7 +9,6 @@ import DistributerAgent.DistributeAgent;
 import ProducerAgent.ProduceBehaviour;
 import additionPacakge.CheckHour;
 
-import additionPacakge.QueueDecider;
 import jade.core.AID;
 import jade.core.Agent;
 
@@ -17,15 +16,18 @@ import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class AgentSetup extends Agent {
     private CheckHour time = new CheckHour(System.currentTimeMillis(), 20_000);
-    private QueueDecider decider = new QueueDecider();
-    private List <AID> queue = new ArrayList<>();
+    private Map <AID,Integer> queue1 = new ConcurrentHashMap<>();
+
     @SneakyThrows
     @Override
     protected void setup() {
+        List <AID> queue = new ArrayList<>();
 //        if (oneTopicExist){
 //            oneTopicExist = false;
 //            addBehaviour(new TopicReceive());
@@ -33,11 +35,13 @@ public class AgentSetup extends Agent {
         if (getLocalName().equals("BootFactory")){
             CFG cfgBoot1 = ParseXML.ParseXML("BootFactory");
             addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
+            Thread.sleep(300);
         }
         if (getLocalName().equals("CityTransport")){
             CFG cfgBoot1 = ParseXML.ParseXML("CityTransport");
             addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
         }
+
         if (getLocalName().equals("DistributorOfBootFactory")){
             addBehaviour(new DistributeAgent(this));
         }

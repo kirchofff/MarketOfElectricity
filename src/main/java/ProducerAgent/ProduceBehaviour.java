@@ -8,7 +8,6 @@ import Topic.SendToTopic;
 import additionPacakge.CheckHour;
 import additionPacakge.CreateTopic;
 import additionPacakge.Functions;
-import additionPacakge.QueueDecider;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -21,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.UnaryOperator;
 
 @Slf4j
@@ -38,7 +38,7 @@ public class ProduceBehaviour extends Behaviour {
     private AID subscribeOnTopic;
     private int currentTime;
     private List <AID> queue;
-    private QueueDecider decider;
+//    private Map<AID, Integer> queue;
 
     public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time, List <AID> queue){
         this.myAgent = myAgent;
@@ -76,10 +76,10 @@ public class ProduceBehaviour extends Behaviour {
             if (!queue.contains(msg.getSender())){
                 queue.add(msg.getSender());
 //                log.debug("{} added to queue {}", queue);
+                Thread.sleep(200);
             }
-            Thread.sleep(100);
-            if (queue.size() == 1){
-//            if (msg.getSender().equals(deist.get(0))) {
+//            if (queue.size() == 1){
+            if (queue.get(0).equals(msg.getSender())){
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
                 m.addReceiver(queue.get(0));
                 m.setContent("");
@@ -109,16 +109,18 @@ public class ProduceBehaviour extends Behaviour {
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
                 for (int i = 1; i < queue.size(); i++){
                     m.addReceiver(queue.get(i));
-                    log.debug("ask to sleep {}",queue.get(i).getLocalName());
+//                    log.debug("ask to sleep {}",queue.get(i).getLocalName());
                 }
-                m.setContent("");
+                m.setContent("confirm");
                 m.setProtocol("busy");
                 myAgent.send(m);
+                queue.remove(msg.getSender());
         }
             if (msg.getProtocol().equals("end_of_action")){
-                queue.remove(msg.getSender());
-//                decider.clearSenders();
-                log.debug("{} ended auction removed from queue", msg.getSender().getLocalName());
+//                queue.remove(msg.getSender());
+//                log.debug("{} ended auction removed from queue", msg.getSender().getLocalName());
+                queue.clear();
+//                log.debug("{} ended auction now in queue: ", queue.toString());
             }
         }
     }

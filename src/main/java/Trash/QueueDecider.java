@@ -1,4 +1,4 @@
-package additionPacakge;
+package Trash;
 
 import jade.core.AID;
 import lombok.Synchronized;
@@ -9,8 +9,9 @@ import java.util.List;
 @Slf4j
 public class QueueDecider {
 
-    private List <AID> senders = new ArrayList<>();
-    public void addSender (AID sender){
+    private  List <AID> senders = new ArrayList<>();
+    @Synchronized
+    public synchronized void addSender (AID sender){
         if (!senders.contains(sender)){
             senders.add(sender);
         }
@@ -18,8 +19,7 @@ public class QueueDecider {
     public void clearSenders (){
         senders.clear();
     }
-    public AID decideSender(){
-        AID senderToReturn = senders.get(0);
-        return senderToReturn;
+    public List<AID> getSender(){
+        return senders;
     }
 }

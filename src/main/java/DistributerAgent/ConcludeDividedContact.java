@@ -137,14 +137,13 @@ public class ConcludeDividedContact extends OneShotBehaviour {
 
     @Override
     public int onEnd() {
-        if (onEnd == 1){
+            log.debug("{} send that auction ended", getBehaviourName());
             List <AID> sellersToEnd  = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
             ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
             sellersToEnd.forEach(real_end::addReceiver);
             real_end.setContent("");
             real_end.setProtocol("end_of_action");
             myAgent.send(real_end);
-        }
         return onEnd;
     }
 }
