@@ -2,14 +2,20 @@ package Agents;
 
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MockAgent extends Agent {
+
     @Override
     protected void setup() {
-        Object [] arguments = getArguments();
-        for (Object arg : getArguments()){
-            Behaviour behaviour = (Behaviour) arg;
-            this.addBehaviour(behaviour);
+        log.info("Mock agent {} starts {} behvaiours", this.getLocalName(), getArguments().length);
+        for (Object arg : getArguments()) {
+            if (!(arg instanceof Behaviour)){
+                throw new RuntimeException("WRONG USING MOCK AGENT!!!!!");
+            }
+            Behaviour beh = (Behaviour) arg;
+            this.addBehaviour(beh);
         }
     }
 }

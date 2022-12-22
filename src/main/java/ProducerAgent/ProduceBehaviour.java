@@ -116,7 +116,7 @@ public class ProduceBehaviour extends Behaviour {
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
                 for (int i = 1; i < queueDecider.getSenders().size(); i++){
                     m.addReceiver(queueDecider.getSenders().get(i));
-                    log.debug("{} ASK TO SLEEP {}",myAgent.getLocalName(),queue.get(i).getLocalName());
+//                    log.debug("{} ASK TO SLEEP {}",myAgent.getLocalName(),queue.get(i).getLocalName());
                 }
                 m.setContent("confirm");
                 m.setProtocol("busy");

@@ -42,6 +42,12 @@ public class AgentSetup extends Agent {
         if (getLocalName().equals("City_Transport")){
             CFG cfgBoot1 = ParseXML.ParseXML("CityTransport");
             addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
+            Thread.sleep(400);
+        }
+
+        if (getLocalName().equals("Metal_Factory")){
+            CFG cfgBoot1 = ParseXML.ParseXML("MetalFactory");
+            addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
         }
 
         if (getLocalName().equals("Distributor_Of_Boot_Factory")){
@@ -49,6 +55,10 @@ public class AgentSetup extends Agent {
         }
 
         if (getLocalName().equals("Distributor_Of_City_Transport")){
+            addBehaviour(new DistributeAgent(this));
+        }
+
+        if (getLocalName().equals("Distributor_Of_Metal_Factory")){
             addBehaviour(new DistributeAgent(this));
         }
 
