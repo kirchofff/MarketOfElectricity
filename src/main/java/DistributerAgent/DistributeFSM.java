@@ -79,17 +79,11 @@ public class DistributeFSM extends FSMBehaviour {
             @Override
             public void action() {
                 log.info("Auction has been ended");
-                ACLMessage m = new ACLMessage(ACLMessage.CONFIRM);
-                seller.forEach(m::addReceiver);
-                m.setContent("");
-                m.setProtocol("end_of_action");
-                myAgent.send(m);
-                myAgent.addBehaviour(new WakerBehaviour(myAgent,200) {
-                    @Override
-                    protected void onWake() {
-                        super.onWake();
-                    }
-                });
+//                ACLMessage m = new ACLMessage(ACLMessage.CONFIRM);
+//                seller.forEach(m::addReceiver);
+//                m.setContent("");
+//                m.setProtocol("end_of_action");
+//                myAgent.send(m);
             }
         }, END);
 

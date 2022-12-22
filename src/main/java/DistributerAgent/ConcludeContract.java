@@ -77,6 +77,13 @@ public class ConcludeContract extends OneShotBehaviour {
                     bidsAnalyzer.resetBest();
                 }
             });
+
+            List<AID> sellersToEnd = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
+            ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
+            sellersToEnd.forEach(real_end::addReceiver);
+            real_end.setContent("");
+            real_end.setProtocol("end_of_action");
+            myAgent.send(real_end);
             this.onEnd = 1;
         }
     }

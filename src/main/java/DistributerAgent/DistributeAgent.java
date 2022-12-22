@@ -23,6 +23,10 @@ public class DistributeAgent extends Behaviour {
     private List <AID> senders = new ArrayList<>();
     private double price;
     private double energy;
+    private AID topicName;
+    private AID consumer;
+    private boolean go;
+    private boolean sleep;
     public DistributeAgent(Agent myAgent){
         this.myAgent = myAgent;
     }
@@ -38,7 +42,7 @@ public class DistributeAgent extends Behaviour {
     public void action() {
         mt = MessageTemplate.or(MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST), MessageTemplate.MatchProtocol("request")),
                 MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.DISCONFIRM), MessageTemplate.or(
-                        MessageTemplate.MatchProtocol("wait"), MessageTemplate.MatchProtocol("go"))));
+                        MessageTemplate.MatchProtocol("busy"), MessageTemplate.MatchProtocol("go"))));
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null){
             if (msg.getProtocol().equals("request")){
@@ -54,21 +58,51 @@ public class DistributeAgent extends Behaviour {
                 request.setProtocol("topic");
                 request.setContent(subscribeOnTopic.getLocalName());
                 myAgent.send(request);
+                consumer = msg.getSender();
+                topicName = subscribeOnTopic;
                 price = Double.parseDouble(msg.getContent().split(";")[2]);
                 energy = Double.parseDouble(msg.getContent().split(";")[0]);
-                myAgent.addBehaviour(new DistributeFSM (
-                        myAgent,
-                        Double.parseDouble(msg.getContent().split(";")[0]),
-                        Double.parseDouble(msg.getContent().split(";")[2]),
-                        subscribeOnTopic,
-                        msg.getSender(),
-                        seller));
+                go = true;
+                sleep = true;
+//                System.out.println(go);
             }else if(msg.getProtocol().equals("go")){
+                if (go){
+                    log.debug("go tak go");
+                    myAgent.addBehaviour(new DistributeFSM (
+                            myAgent,
+                            energy,
+                            price,
+                            topicName,
+                            consumer,
+                            seller));
+                    go = false;
+//                    System.out.println(go);
+                }
 
             }
-            else if (msg.getProtocol().equals("wait")){
-                log.debug("{} ask {} to wait", msg.getSender().getLocalName(), myAgent.getLocalName());
-                Thread.sleep(5000);
+            else if (msg.getProtocol().equals("busy")){
+                if (sleep){
+                    sleep = false;
+                    log.debug("{} ask {} to wait", msg.getSender().getLocalName(), myAgent.getLocalName());
+                    Thread.sleep(5000);
+                    System.out.println("\n");
+                    log.debug("wake and say that {}  needs this amount of energy {} peak price {}",
+                            consumer.getLocalName(),
+                            energy,
+                            price);
+                    ACLMessage request = new ACLMessage(ACLMessage.SUBSCRIBE);
+                    seller.forEach(request::addReceiver);
+                    request.setProtocol("topic");
+                    request.setContent(topicName.getLocalName());
+                    myAgent.send(request);
+                    myAgent.addBehaviour(new DistributeFSM (
+                            myAgent,
+                            energy,
+                            price,
+                            topicName,
+                            consumer,
+                            seller));
+                }
             }
         }else {
             block();

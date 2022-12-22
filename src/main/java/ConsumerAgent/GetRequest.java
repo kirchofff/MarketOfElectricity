@@ -36,8 +36,9 @@ public class GetRequest extends Behaviour {
                 MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.CANCEL), MessageTemplate.MatchProtocol("fail_trade")));
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null){
+            log.debug("{}", msg.getContent());
             if (msg.getProtocol().equals("fail_trade") && msg.getPerformative() == 2){
-                log.info("I didn't get energy :c");
+                log.info("{} didn't get energy :c", myAgent.getLocalName());
                 myAgent.removeBehaviour(this);
             } else if (msg.getProtocol().equals("deal") && msg.getPerformative() == 3){
                 if (Double.parseDouble(msg.getContent().split(";")[1]) > price){

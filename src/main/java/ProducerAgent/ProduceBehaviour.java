@@ -8,6 +8,7 @@ import Topic.SendToTopic;
 import additionPacakge.CheckHour;
 import additionPacakge.CreateTopic;
 import additionPacakge.Functions;
+import additionPacakge.QueueDecider;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -36,12 +37,16 @@ public class ProduceBehaviour extends Behaviour {
     private MessageTemplate mt;
     private AID subscribeOnTopic;
     private int currentTime;
-    private List <AID> queue = new ArrayList<>();
-    public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time){
+    private List <AID> queue;
+    private QueueDecider decider;
+
+    public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time, List <AID> queue){
         this.myAgent = myAgent;
         this.cfgGeneration = cfg;
         this.time = time;
         myPrice = cfg.getPrice();
+//        this.decider = decider;
+        this.queue = queue;
     }
 
     @Override
@@ -53,16 +58,15 @@ public class ProduceBehaviour extends Behaviour {
         functions = new Functions(coefficients, time);
         functions.raiseEnergy();
         currentTime = time.returnCurrentTime();
-
     }
-
+    @SneakyThrows
     @Override
     public void action() {
         double priceForKWT = 0;
         mt = MessageTemplate.or(MessageTemplate.and(
                 MessageTemplate.MatchPerformative(ACLMessage.SUBSCRIBE), MessageTemplate.MatchProtocol("topic")),
                 MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.CONFIRM),
-                        MessageTemplate.or(MessageTemplate.MatchProtocol("end_of_action"), MessageTemplate.MatchProtocol("decided"))));
+                        MessageTemplate.or(MessageTemplate.MatchProtocol("end_of_action"), MessageTemplate.MatchProtocol("full_of_action"))));
         ACLMessage msg = myAgent.receive(mt);
         if (currentTime != time.returnCurrentTime()){
             functions.raiseEnergy();
@@ -71,12 +75,20 @@ public class ProduceBehaviour extends Behaviour {
         if (msg != null) {
             if (!queue.contains(msg.getSender())){
                 queue.add(msg.getSender());
+//                log.debug("{} added to queue {}", queue);
             }
+            Thread.sleep(100);
             if (queue.size() == 1){
-                if (msg.getProtocol().equals("topic")){
-                    if (functions.returnEnergy() > 0){
-                        priceForKWT = cfgGeneration.getPrice()/functions.returnEnergy();
-                    } else if (functions.returnEnergy() == 0){
+//            if (msg.getSender().equals(deist.get(0))) {
+                ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
+                m.addReceiver(queue.get(0));
+                m.setContent("");
+                m.setProtocol("go");
+                myAgent.send(m);
+                if (msg.getProtocol().equals("topic")) {
+                    if (functions.returnEnergy() > 0) {
+                        priceForKWT = cfgGeneration.getPrice() / functions.returnEnergy();
+                    } else if (functions.returnEnergy() == 0) {
                         priceForKWT = 0;
                     }
                     CreateTopic topic = new CreateTopic(myAgent);
@@ -93,21 +105,21 @@ public class ProduceBehaviour extends Behaviour {
                             11,
                             "propose_price_sell", functions.returnEnergy()));
                 }
-            } else if (queue.size() > 1){
+            } else if (msg.getProtocol().equals("topic") && queue.size() > 1) {
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
-                AID aid = new AID(queue.get(1).getLocalName(), false);
-                m.addReceiver(aid);
+                for (int i = 1; i < queue.size(); i++){
+                    m.addReceiver(queue.get(i));
+                    log.debug("ask to sleep {}",queue.get(i).getLocalName());
+                }
                 m.setContent("");
                 m.setProtocol("busy");
                 myAgent.send(m);
-                log.debug("ask to sleep {}",queue.get(1).getLocalName());
-            }
+        }
             if (msg.getProtocol().equals("end_of_action")){
                 queue.remove(msg.getSender());
-//                log.debug("{} ended auction", msg.getSender());
+//                decider.clearSenders();
+                log.debug("{} ended auction removed from queue", msg.getSender().getLocalName());
             }
-        } else {
-            block();
         }
     }
 

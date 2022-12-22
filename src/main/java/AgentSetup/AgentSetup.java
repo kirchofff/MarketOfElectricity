@@ -9,14 +9,20 @@ import DistributerAgent.DistributeAgent;
 import ProducerAgent.ProduceBehaviour;
 import additionPacakge.CheckHour;
 
+import additionPacakge.QueueDecider;
+import jade.core.AID;
 import jade.core.Agent;
 
 import lombok.SneakyThrows;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class AgentSetup extends Agent {
     private CheckHour time = new CheckHour(System.currentTimeMillis(), 20_000);
-    private boolean oneTopicExist = true;
+    private QueueDecider decider = new QueueDecider();
+    private List <AID> queue = new ArrayList<>();
     @SneakyThrows
     @Override
     protected void setup() {
@@ -42,15 +48,15 @@ public class AgentSetup extends Agent {
 
         if (getLocalName().equals("SES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("SES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
         }
         if (getLocalName().equals("WES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("WES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
         }
         if (getLocalName().equals("TES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("TES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
         }
     }
 }

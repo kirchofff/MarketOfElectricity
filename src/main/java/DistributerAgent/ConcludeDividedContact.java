@@ -95,6 +95,7 @@ public class ConcludeDividedContact extends OneShotBehaviour {
                             ,priceForMWT);
                     energyRequest -= energyRequest;
                     sellersToRefuse.remove(bidsAnalyzer.getSellers().get(i));
+
                 }
             }
             ACLMessage mc = new ACLMessage(ACLMessage.CANCEL);
@@ -112,6 +113,7 @@ public class ConcludeDividedContact extends OneShotBehaviour {
             bidsAnalyzer.resetDivideContract();
             onEnd = 1;
         } else if (fullPrice > priceFromConsumer){
+            log.info("Price is too high");
             double finalFullPrice1 = fullPrice;
             ACLMessage mc = new ACLMessage(ACLMessage.CANCEL);
             sellersToRefuse.forEach(mc::addReceiver);
@@ -135,6 +137,14 @@ public class ConcludeDividedContact extends OneShotBehaviour {
 
     @Override
     public int onEnd() {
+        if (onEnd == 1){
+            List <AID> sellersToEnd  = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
+            ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
+            sellersToEnd.forEach(real_end::addReceiver);
+            real_end.setContent("");
+            real_end.setProtocol("end_of_action");
+            myAgent.send(real_end);
+        }
         return onEnd;
     }
 }
