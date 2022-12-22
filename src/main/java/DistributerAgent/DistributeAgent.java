@@ -64,10 +64,9 @@ public class DistributeAgent extends Behaviour {
                 energy = Double.parseDouble(msg.getContent().split(";")[0]);
                 go = true;
                 sleep = true;
-//                System.out.println(go);
             }else if(msg.getProtocol().equals("go")){
                 if (go){
-                    log.debug("{} received permission to bid", myAgent.getLocalName());
+                    log.debug("{} RECEIVES PERMISSION TO BID", myAgent.getLocalName().toUpperCase());
                     myAgent.addBehaviour(new DistributeFSM (
                             myAgent,
                             energy,
@@ -76,19 +75,18 @@ public class DistributeAgent extends Behaviour {
                             consumer,
                             seller));
                     go = false;
-//                    System.out.println(go);
                 }
 
             }
             else if (msg.getProtocol().equals("busy")){
                 if (sleep){
                     sleep = false;
-                    log.debug("{} ask {} to wait", msg.getSender().getLocalName(), myAgent.getLocalName());
-                    Thread.sleep(5_000);
+                    log.debug("{} ASK {} TO WAIT", msg.getSender().getLocalName().toUpperCase(), myAgent.getLocalName().toUpperCase());
+                    Thread.sleep(3_000);
                     System.out.println("\n");
-                    log.debug("{} wake and say that {}  needs this amount of energy {} peak price {}",
-                            myAgent.getLocalName()
-                            ,consumer.getLocalName(),
+                    log.debug("{} WAITED FOR IT'S TERN AND SAY THAT {} NEEDS THIS AMOUNT OF ENERGY {} PEAK PRICE {}",
+                            myAgent.getLocalName().toUpperCase()
+                            ,consumer.getLocalName().toUpperCase(),
                             energy,
                             price);
                     ACLMessage request = new ACLMessage(ACLMessage.SUBSCRIBE);

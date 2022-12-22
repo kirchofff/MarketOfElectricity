@@ -23,12 +23,12 @@ public class UnsuccessfulTrade extends OneShotBehaviour {
         m.setContent("Unsuccessful trade");
         m.setProtocol("fail_trade");
         myAgent.send(m);
-        log.debug("unsuccessful trade");
+//        log.debug("unsuccessful trade");
     }
 
     @Override
     public int onEnd() {
-        log.debug("{} send that auction ended", getBehaviourName());
+//        log.debug("{} send that auction ended", getBehaviourName());
         List<AID> sellersToEnd  = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
         ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
         sellersToEnd.forEach(real_end::addReceiver);

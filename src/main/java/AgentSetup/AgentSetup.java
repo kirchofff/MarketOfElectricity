@@ -9,6 +9,7 @@ import DistributerAgent.DistributeAgent;
 import ProducerAgent.ProduceBehaviour;
 import additionPacakge.CheckHour;
 
+import additionPacakge.QueueDecider;
 import jade.core.AID;
 import jade.core.Agent;
 
@@ -21,8 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class AgentSetup extends Agent {
-    private CheckHour time = new CheckHour(System.currentTimeMillis(), 20_000);
+    private CheckHour time = new CheckHour(System.currentTimeMillis(), 15_000);
     private Map <AID,Integer> queue1 = new ConcurrentHashMap<>();
+    private QueueDecider queueDecider = new QueueDecider();
 
     @SneakyThrows
     @Override
@@ -32,35 +34,35 @@ public class AgentSetup extends Agent {
 //            oneTopicExist = false;
 //            addBehaviour(new TopicReceive());
 //        }
-        if (getLocalName().equals("BootFactory")){
+        if (getLocalName().equals("Boot_Factory")){
             CFG cfgBoot1 = ParseXML.ParseXML("BootFactory");
             addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
-            Thread.sleep(300);
+            Thread.sleep(400);
         }
-        if (getLocalName().equals("CityTransport")){
+        if (getLocalName().equals("City_Transport")){
             CFG cfgBoot1 = ParseXML.ParseXML("CityTransport");
             addBehaviour(new ConsumerAgent(this, cfgBoot1, time));
         }
 
-        if (getLocalName().equals("DistributorOfBootFactory")){
+        if (getLocalName().equals("Distributor_Of_Boot_Factory")){
             addBehaviour(new DistributeAgent(this));
         }
 
-        if (getLocalName().equals("DistributorOfCityTransport")){
+        if (getLocalName().equals("Distributor_Of_City_Transport")){
             addBehaviour(new DistributeAgent(this));
         }
 
         if (getLocalName().equals("SES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("SES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue, queueDecider));
         }
         if (getLocalName().equals("WES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("WES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue, queueDecider));
         }
         if (getLocalName().equals("TES")){
             CFGGeneration cfgGeneration1 = ParseGenerationXML.ParseXML("TES");
-            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue));
+            addBehaviour(new ProduceBehaviour(this, cfgGeneration1, time, queue, queueDecider));
         }
     }
 }

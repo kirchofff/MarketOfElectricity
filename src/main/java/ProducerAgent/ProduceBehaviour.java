@@ -8,6 +8,7 @@ import Topic.SendToTopic;
 import additionPacakge.CheckHour;
 import additionPacakge.CreateTopic;
 import additionPacakge.Functions;
+import additionPacakge.QueueDecider;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -15,6 +16,7 @@ import jade.core.behaviours.FSMBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -38,15 +40,17 @@ public class ProduceBehaviour extends Behaviour {
     private AID subscribeOnTopic;
     private int currentTime;
     private List <AID> queue;
+    private QueueDecider queueDecider;
 //    private Map<AID, Integer> queue;
 
-    public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time, List <AID> queue){
+    public ProduceBehaviour(Agent myAgent, CFGGeneration cfg, CheckHour time, List <AID> queue, QueueDecider queueDecider){
         this.myAgent = myAgent;
         this.cfgGeneration = cfg;
         this.time = time;
         myPrice = cfg.getPrice();
 //        this.decider = decider;
         this.queue = queue;
+        this.queueDecider = queueDecider;
     }
 
     @Override
@@ -61,6 +65,7 @@ public class ProduceBehaviour extends Behaviour {
     }
     @SneakyThrows
     @Override
+    @Synchronized
     public void action() {
         double priceForKWT = 0;
         mt = MessageTemplate.or(MessageTemplate.and(
@@ -75,13 +80,15 @@ public class ProduceBehaviour extends Behaviour {
         if (msg != null) {
             if (!queue.contains(msg.getSender())){
                 queue.add(msg.getSender());
-//                log.debug("{} added to queue {}", queue);
-                Thread.sleep(200);
+                queueDecider.addSender(msg.getSender());
+//                log.debug("{} added to queue {}", queueDecider.getSenders());
+//                Thread.sleep(200);
             }
 //            if (queue.size() == 1){
-            if (queue.get(0).equals(msg.getSender())){
+            if (queueDecider.getFirst().equals(msg.getSender())){
+//                log.info("Permission to bid sent to {}", queueDecider.getFirst().getLocalName());
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
-                m.addReceiver(queue.get(0));
+                m.addReceiver(queueDecider.getFirst());
                 m.setContent("");
                 m.setProtocol("go");
                 myAgent.send(m);
@@ -105,22 +112,23 @@ public class ProduceBehaviour extends Behaviour {
                             11,
                             "propose_price_sell", functions.returnEnergy()));
                 }
-            } else if (msg.getProtocol().equals("topic") && queue.size() > 1) {
+            }else if (msg.getProtocol().equals("topic") && queue.size() > 1) {
                 ACLMessage m = new ACLMessage(ACLMessage.DISCONFIRM);
-                for (int i = 1; i < queue.size(); i++){
-                    m.addReceiver(queue.get(i));
-//                    log.debug("ask to sleep {}",queue.get(i).getLocalName());
+                for (int i = 1; i < queueDecider.getSenders().size(); i++){
+                    m.addReceiver(queueDecider.getSenders().get(i));
+                    log.debug("{} ASK TO SLEEP {}",myAgent.getLocalName(),queue.get(i).getLocalName());
                 }
                 m.setContent("confirm");
                 m.setProtocol("busy");
                 myAgent.send(m);
-                queue.remove(msg.getSender());
+                queueDecider.removeSender(msg.getSender());
         }
             if (msg.getProtocol().equals("end_of_action")){
 //                queue.remove(msg.getSender());
 //                log.debug("{} ended auction removed from queue", msg.getSender().getLocalName());
+                //                log.debug("{} ended auction now in queue: ", queue.toString());
                 queue.clear();
-//                log.debug("{} ended auction now in queue: ", queue.toString());
+                queueDecider.clearSenders();
             }
         }
     }

@@ -113,7 +113,7 @@ public class ConcludeDividedContact extends OneShotBehaviour {
             bidsAnalyzer.resetDivideContract();
             onEnd = 1;
         } else if (fullPrice > priceFromConsumer){
-            log.info("Price is too high");
+            log.info("Price {} is too high", fullPrice);
             double finalFullPrice1 = fullPrice;
             ACLMessage mc = new ACLMessage(ACLMessage.CANCEL);
             sellersToRefuse.forEach(mc::addReceiver);
@@ -137,7 +137,7 @@ public class ConcludeDividedContact extends OneShotBehaviour {
 
     @Override
     public int onEnd() {
-            log.debug("{} send that auction ended", getBehaviourName());
+//            log.debug("{} send that auction ended", getBehaviourName());
             List <AID> sellersToEnd  = new ArrayList<>(DfHelper.findAgents(myAgent, "Seller"));
             ACLMessage real_end = new ACLMessage(ACLMessage.CONFIRM);
             sellersToEnd.forEach(real_end::addReceiver);

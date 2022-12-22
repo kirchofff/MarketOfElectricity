@@ -1,5 +1,7 @@
 package additionPacakge;
 
+import lombok.Synchronized;
+
 import java.util.concurrent.*;
 
 public class CheckHour {
@@ -18,14 +20,16 @@ public class CheckHour {
         ses.scheduleAtFixedRate(() -> localTime++, durationOfHourMILLISECONDS, durationOfHourMILLISECONDS, TimeUnit.MILLISECONDS);
         ses2.scheduleAtFixedRate(() ->time = 0, durationOfHourMILLISECONDS*24, durationOfHourMILLISECONDS*24, TimeUnit.MILLISECONDS);
     }
-    public int returnCurrentTime (){
+    @Synchronized
+    public synchronized int returnCurrentTime (){
         if (time < 24){
             return time;
         }else{
             return -1000;
         }
     }
-    public long millisecondsRemain (){
+    @Synchronized
+    public synchronized long millisecondsRemain (){
         if (time < 24){
             return (durationOfHourMILLISECONDS - (System.currentTimeMillis()-durationOfHourMILLISECONDS*localTime-startTime));
         } else{

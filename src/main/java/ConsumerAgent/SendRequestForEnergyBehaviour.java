@@ -39,13 +39,14 @@ public class SendRequestForEnergyBehaviour extends OneShotBehaviour {
 //        Thread.sleep(100);
 //        distributor = new ArrayList<>(DfHelper.findAgents(myAgent, "DistributorOf"+distributorName));
     }
+    @SneakyThrows
     @Override
     public void action() {
         for (ParametersOfConsumer poc : cfg.getPeriods()) {
             if (poc.getTime() == currentTime.returnCurrentTime()){
                 ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
 //                distributor.forEach(m::addReceiver);
-                AID aid = new AID("DistributorOf"+distributorName, false);
+                AID aid = new AID("Distributor_Of_"+distributorName, false);
                 m.addReceiver(aid);
                 m.setContent((poc.getLoad()*cfg.getFullLoad())+";"+ currentTime.returnCurrentTime()+";"+price);
                 m.setProtocol(requestName);

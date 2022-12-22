@@ -61,19 +61,12 @@ public class ConcludeContract extends OneShotBehaviour {
             zeroReduce.setProtocol("cfp");
             myAgent.send(zeroReduce);
 
-            myAgent.addBehaviour(new OneShotBehaviour() {
-                @Override
-                public void action() {
-                    ACLMessage m = new ACLMessage(ACLMessage.CFP);
-                    m.addReceiver(consumer);
-                    m.setProtocol("deal");
-                    m.setContent(energyRequest+";"+bidsAnalyzer.getBestValue());
-                    myAgent.send(m);
-                }
-            });
-
-            bidsAnalyzer.resetBest();
-
+            ACLMessage messageForConsumer = new ACLMessage(ACLMessage.CFP);
+            messageForConsumer.addReceiver(consumer);
+            messageForConsumer.setProtocol("deal");
+            messageForConsumer.setContent(energyRequest+";"+bidsAnalyzer.getBestValue());
+            log.debug("Price is :{}", bidsAnalyzer.getBestValue());
+            myAgent.send(messageForConsumer);
 
             this.onEnd = 1;
         }
@@ -88,6 +81,7 @@ public class ConcludeContract extends OneShotBehaviour {
         real_end.setContent("");
         real_end.setProtocol("end_of_action");
         myAgent.send(real_end);
+        bidsAnalyzer.resetBest();
         return onEnd;
     }
 }
